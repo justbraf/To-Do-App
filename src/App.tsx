@@ -12,15 +12,32 @@ function App() {
   },])
 
   // function to add new task to existing tasks array
-  const addNewTask = (taskDetails) => {
+  const addNewTask = (taskDetails: string) => {
     const newTask = {
-      id: tasks.length + 1,
+      id: tasks.length ? tasks[tasks.length - 1].id + 1 : 1,
       task: taskDetails,
       completed: false,
       createdOn: new Date()
     }
     // the spread operator ()...) is used to create a new array with existing tasks and the new task
     setTasks([...tasks, newTask])
+  }
+
+  const deleteTask = (taskId: number) => {
+    const updTasks = tasks.filter((task)=>{
+      return task.id !== taskId
+    })
+    setTasks(updTasks)
+  }
+
+  const toggleComplete = (taskId: number) => {
+    const updTasks = tasks.map((task)=>{
+      if(task.id === taskId){
+        return {...task, completed: !task.completed}
+      }
+      return task
+    })
+    setTasks(updTasks)  
   }
 
   return (
@@ -33,7 +50,7 @@ function App() {
           </div>
           <div>
             <select name="filter" id="filterList" className="bg-slate-300 p-2 rounded-lg text-black hover:bg-slate-200 cursor-pointer">
-              <option selected value="all">All</option>
+              <option defaultValue="all">All</option>
               <option value="done">Done</option>
               <option value="unfinished">Not Finished</option>
             </select>
@@ -43,9 +60,12 @@ function App() {
         {/* pass add new task function to child component */}
         <AddTask addNewTask={addNewTask} />
         <div className="bg-slate-300 w-full rounded-lg mt-4 px-8 py-6">
-          {/* iterate over all the elements of the array and pass them to the child component */
+          {tasks.length === 0 ? 
+          <div className="text-center">No Tasks Added</div> 
+          :
+          /* iterate over all the elements of the array and pass them to the child component */
             tasks.map((task) => (
-              <ListItem key={task.id} task={task} />
+              <ListItem key={task.id} task={task} delTask={deleteTask} toggleComplete={toggleComplete}/>
             ))}
         </div>
         {/* end list */}
