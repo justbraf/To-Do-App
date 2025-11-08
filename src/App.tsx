@@ -1,15 +1,22 @@
-import AddTask from "./components/AddTask"
-import ListItem from "./components/ListItem"
 import { useState } from "react"
+import AddTask from "./components/AddTask"
+import EditTask from "./components/EditTask"
+import ListItem from "./components/ListItem"
 
 function App() {
-  // define state variable for tasks with sample task
+  // state variable for tasks with sample task
   const [tasks, setTasks] = useState([{
     id: 1,
     task: "Sample Task",
     completed: false,
     createdOn: new Date()
   },])
+
+  // state variable to hold task being edited
+  const [taskToEdit, setTaskToEdit] = useState({
+    id: 0,
+    task: ""
+  });
 
   // function to add new task to existing tasks array
   const addNewTask = (taskDetails: string) => {
@@ -19,31 +26,48 @@ function App() {
       completed: false,
       createdOn: new Date()
     }
-    // the spread operator ()...) is used to create a new array with existing tasks and the new task
+    // the spread operator (...) is used to create a new array with existing tasks and the new task
     setTasks([...tasks, newTask])
   }
 
+  // find the task by its id and update its details
+  const updateTask = (taskId: number, taskDetails: string) => {
+    const updTasks = tasks.map((task) => {
+      if (task.id === taskId)
+        task.task = taskDetails
+      return task
+    })
+    setTasks(updTasks)
+  }
+
+  // find a task by its id and remove it from the tasks array
   const deleteTask = (taskId: number) => {
-    const updTasks = tasks.filter((task)=>{
+    // filter method is used to create a new array excluding the task with the specified id
+    const updTasks = tasks.filter((task) => {
       return task.id !== taskId
     })
     setTasks(updTasks)
   }
 
+  // toggle the completed status of a task
   const toggleComplete = (taskId: number) => {
-    const updTasks = tasks.map((task)=>{
-      if(task.id === taskId){
-        return {...task, completed: !task.completed}
+    const updTasks = tasks.map((task) => {
+      if (task.id === taskId) {
+        // deconstruct the task into its individual key/value pairs and toggle completed status
+        return { ...task, completed: !task.completed }
       }
       return task
     })
-    setTasks(updTasks)  
+    setTasks(updTasks)
   }
+
+
 
   return (
     <div className="h-screen w-screen flex justify-center bg-stone-100">
       <div className="flex flex-col items-center mx-24 mt-10 w-3xl">
         <div className="text-2xl mb-4">TODO LIST</div>
+        {/* buttons */}
         <div className="flex w-full justify-between">
           <div>
             <button className="bg-blue-600 p-2 rounded-lg text-white hover:bg-blue-400 cursor-pointer">Add Task</button>
@@ -56,16 +80,19 @@ function App() {
             </select>
           </div>
         </div>
-        {/* end btns */}
-        {/* pass add new task function to child component */}
+        {/* end buttons */}
+        {/* pass add new task function to the child component */}
         <AddTask addNewTask={addNewTask} />
+        {/* pass the task to be edited state variable and its setter method, and the update function to the child component*/}
+        <EditTask taskToEdit={taskToEdit} setTaskToEdit={setTaskToEdit} updateTask={updateTask} />
         <div className="bg-slate-300 w-full rounded-lg mt-4 px-8 py-6">
-          {tasks.length === 0 ? 
-          <div className="text-center">No Tasks Added</div> 
-          :
-          /* iterate over all the elements of the array and pass them to the child component */
+          {tasks.length === 0 ?
+            <div className="text-center">No Tasks Added</div>
+            :
+            /* iterate over all the elements of the array and pass them to the child component */
             tasks.map((task) => (
-              <ListItem key={task.id} task={task} delTask={deleteTask} toggleComplete={toggleComplete}/>
+              // the key prop is a special string attribute that needs to be included when creating lists of elements and is used by React to identify which items have changed, are added, or are removed
+              <ListItem key={task.id} task={task} delTask={deleteTask} toggleComplete={toggleComplete} setEdit={setTaskToEdit} />
             ))}
         </div>
         {/* end list */}
