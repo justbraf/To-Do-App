@@ -1,22 +1,45 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import AddTask from "./components/AddTask"
 import EditTask from "./components/EditTask"
 import ListItem from "./components/ListItem"
 
 function App() {
+  // define a Task interface to type the task objects
+  interface Task {
+    id: number,
+    task: string,
+    completed: boolean,
+    createdOn: Date
+  }
+
   // state variable for tasks with sample task
-  const [tasks, setTasks] = useState([{
-    id: 1,
-    task: "Sample Task",
-    completed: false,
-    createdOn: new Date()
-  },])
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [filteredTasks, setFilteredTasks] = useState<Task[]>([])
 
   // state variable to hold task being edited
   const [taskToEdit, setTaskToEdit] = useState({
     id: 0,
     task: ""
   })
+
+  const [filter, setFilter] = useState<number>(0)
+
+  const handleFilterChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setFilter(parseInt(e.target.value))
+  }
+
+  useEffect(() => {
+    switch (filter) {
+      case 1:
+        setFilteredTasks(tasks.filter((task) => task.completed === true))
+        break
+      case 2:
+        setFilteredTasks(tasks.filter((task) => task.completed === false))
+        break
+      default:
+        setFilteredTasks(tasks)
+    }
+  }, [filter, tasks])
 
   // use state variables to control visibility of add and edit task components
   const [showAddTask, setShowAddTask] = useState(false)
@@ -85,26 +108,26 @@ function App() {
             <button className="bg-blue-600 p-2 rounded-lg text-white hover:bg-blue-400 cursor-pointer" onClick={showAddTaskComponent}>Add Task</button>
           </div>
           <div>
-            <select name="filter" id="filterList" className="bg-slate-300 p-2 rounded-lg text-black hover:bg-slate-200 cursor-pointer">
-              <option defaultValue="all">All</option>
-              <option value="done">Done</option>
-              <option value="unfinished">Not Finished</option>
+            <select name="filter" id="filterList" onChange={handleFilterChange} className="bg-slate-300 p-2 rounded-lg text-black hover:bg-slate-200 cursor-pointer">
+              <option defaultValue="0" value="0">All</option>
+              <option value="1">Done</option>
+              <option value="2">Not Finished</option>
             </select>
           </div>
         </div>
         {/* end buttons */}
         {/* pass add new task function to the child component */}
-        <AddTask addNewTask={addNewTask} showAddTask={showAddTask} showAddTaskComponent={showAddTaskComponent}/>
+        <AddTask addNewTask={addNewTask} showAddTask={showAddTask} showAddTaskComponent={showAddTaskComponent} />
         {/* pass the task to be edited state variable and its setter method, and the update function to the child component*/}
-        <EditTask taskToEdit={taskToEdit} setTaskToEdit={setTaskToEdit} updateTask={updateTask} showEditTask={showEditTask} showEditTaskComponent={showEditTaskComponent}/>
+        <EditTask taskToEdit={taskToEdit} setTaskToEdit={setTaskToEdit} updateTask={updateTask} showEditTask={showEditTask} showEditTaskComponent={showEditTaskComponent} />
         <div className="bg-slate-300 w-full rounded-lg mt-4 px-8 py-6">
-          {tasks.length === 0 ?
+          {filteredTasks.length === 0 ?
             <div className="text-center">No Tasks Added</div>
             :
             /* iterate over all the elements of the array and pass them to the child component */
-            tasks.map((task) => (
+            filteredTasks.map((task) => (
               // the key prop is a special string attribute that needs to be included when creating lists of elements and is used by React to identify which items have changed, are added, or are removed
-              <ListItem key={task.id} task={task} delTask={deleteTask} toggleComplete={toggleComplete} setEdit={setTaskToEdit} showEditTaskComponent={showEditTaskComponent}/>
+              <ListItem key={task.id} task={task} delTask={deleteTask} toggleComplete={toggleComplete} setEdit={setTaskToEdit} showEditTaskComponent={showEditTaskComponent} />
             ))}
         </div>
         {/* end list */}
