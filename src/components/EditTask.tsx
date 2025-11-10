@@ -8,9 +8,9 @@ const EditTask = ({ taskToEdit, setTaskToEdit, updateTask, showEditTask, showEdi
     }
 
     const handleCancel = (e) => {
-        e.preventDefault(false)
+        e.preventDefault()
         e.currentTarget.form.task.value = ""
-        showEditTaskComponent()
+        showEditTaskComponent(false)
     }
 
     // the paarameeter e is of type React.ChangeEvent<HTMLInputElement> which represents the event object for input field changes in React.
@@ -26,7 +26,7 @@ const EditTask = ({ taskToEdit, setTaskToEdit, updateTask, showEditTask, showEdi
         // dynamically set the class name based on the showEditTask prop using template literals
         <div className={`w-6/8 ${showEditTask ? "" : "hidden"}`}>
             <form>
-                <div className="flex mb-2">
+                <div className="flex my-2">
                     <span className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border rounded-e-0 border-gray-300 border-e-0 rounded-s-md dark:bg-gray-600 dark:text-gray-400 dark:border-gray-600">
                         <i className="fa-solid fa-pen-clip"></i>
                     </span>
