@@ -16,7 +16,19 @@ function App() {
   const [taskToEdit, setTaskToEdit] = useState({
     id: 0,
     task: ""
-  });
+  })
+
+  // use state variables to control visibility of add and edit task components
+  const [showAddTask, setShowAddTask] = useState(false)
+  const [showEditTask, setShowEditTask] = useState(false)
+
+  const showAddTaskComponent = () => {
+    setShowAddTask(!showAddTask)
+  }
+
+  const showEditTaskComponent = (state: boolean) => {
+    setShowEditTask(state)
+  }
 
   // function to add new task to existing tasks array
   const addNewTask = (taskDetails: string) => {
@@ -70,7 +82,7 @@ function App() {
         {/* buttons */}
         <div className="flex w-full justify-between">
           <div>
-            <button className="bg-blue-600 p-2 rounded-lg text-white hover:bg-blue-400 cursor-pointer">Add Task</button>
+            <button className="bg-blue-600 p-2 rounded-lg text-white hover:bg-blue-400 cursor-pointer" onClick={showAddTaskComponent}>Add Task</button>
           </div>
           <div>
             <select name="filter" id="filterList" className="bg-slate-300 p-2 rounded-lg text-black hover:bg-slate-200 cursor-pointer">
@@ -82,9 +94,9 @@ function App() {
         </div>
         {/* end buttons */}
         {/* pass add new task function to the child component */}
-        <AddTask addNewTask={addNewTask} />
+        <AddTask addNewTask={addNewTask} showAddTask={showAddTask} showAddTaskComponent={showAddTaskComponent}/>
         {/* pass the task to be edited state variable and its setter method, and the update function to the child component*/}
-        <EditTask taskToEdit={taskToEdit} setTaskToEdit={setTaskToEdit} updateTask={updateTask} />
+        <EditTask taskToEdit={taskToEdit} setTaskToEdit={setTaskToEdit} updateTask={updateTask} showEditTask={showEditTask} showEditTaskComponent={showEditTaskComponent}/>
         <div className="bg-slate-300 w-full rounded-lg mt-4 px-8 py-6">
           {tasks.length === 0 ?
             <div className="text-center">No Tasks Added</div>
@@ -92,7 +104,7 @@ function App() {
             /* iterate over all the elements of the array and pass them to the child component */
             tasks.map((task) => (
               // the key prop is a special string attribute that needs to be included when creating lists of elements and is used by React to identify which items have changed, are added, or are removed
-              <ListItem key={task.id} task={task} delTask={deleteTask} toggleComplete={toggleComplete} setEdit={setTaskToEdit} />
+              <ListItem key={task.id} task={task} delTask={deleteTask} toggleComplete={toggleComplete} setEdit={setTaskToEdit} showEditTaskComponent={showEditTaskComponent}/>
             ))}
         </div>
         {/* end list */}

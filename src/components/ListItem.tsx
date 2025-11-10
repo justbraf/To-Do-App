@@ -3,7 +3,7 @@ import DeleteItem from "./DeleteItem";
 import TaskStatus from "./TaskStatus";
 import EditItem from "./EditItem";
 
-const ListItem = ({ task, delTask, toggleComplete, setEdit }) => {
+const ListItem = ({ task, delTask, toggleComplete, setEdit, showEditTaskComponent }) => {
     return (
         <div className="bg-white my-3 p-4 rounded-lg flex justify-between">
             <div className="flex">
@@ -15,7 +15,7 @@ const ListItem = ({ task, delTask, toggleComplete, setEdit }) => {
             </div>
             <div>
                 <DeleteItem taskId={task.id} delTask={delTask} />
-                <EditItem taskId={task.id} taskDetails={task.task} setEdit={setEdit}/>
+                <EditItem taskId={task.id} taskDetails={task.task} setEdit={setEdit} showEditTaskComponent={showEditTaskComponent}/>
             </div>
         </div>
     )
