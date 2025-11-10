@@ -1,5 +1,9 @@
+interface DeleteItemProps {
+    taskId: number,
+    delTask: (id: number) => void
+}
 
-const DeleteItem = ({ taskId, delTask }) => {
+const DeleteItem = ({ taskId, delTask }: DeleteItemProps) => {
     const handleDelete = () => {
         delTask(taskId)
     }

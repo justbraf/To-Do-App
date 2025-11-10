@@ -1,9 +1,22 @@
-import { format } from "date-and-time";
-import DeleteItem from "./DeleteItem";
-import TaskStatus from "./TaskStatus";
-import EditItem from "./EditItem";
+import { format } from "date-and-time"
+import DeleteItem from "./DeleteItem"
+import TaskStatus from "./TaskStatus"
+import EditItem from "./EditItem"
 
-const ListItem = ({ task, delTask, toggleComplete, setEdit, showEditTaskComponent }) => {
+interface ListItemProps {
+    task: {
+        id: number,
+        task: string,
+        completed: boolean,
+        createdOn: Date
+    },
+    delTask: (id: number) => void,
+    toggleComplete: (id: number) => void,
+    setEdit: (editTask: { id: number, task: string }) => void,
+    showEditTaskComponent: (state: boolean) => void
+}
+
+const ListItem = ({ task, delTask, toggleComplete, setEdit, showEditTaskComponent }: ListItemProps) => {
     return (
         <div className="bg-white my-3 p-4 rounded-lg flex justify-between">
             <div className="flex">
@@ -15,7 +28,7 @@ const ListItem = ({ task, delTask, toggleComplete, setEdit, showEditTaskComponen
             </div>
             <div>
                 <DeleteItem taskId={task.id} delTask={delTask} />
-                <EditItem taskId={task.id} taskDetails={task.task} setEdit={setEdit} showEditTaskComponent={showEditTaskComponent}/>
+                <EditItem taskId={task.id} taskDetails={task.task} setEdit={setEdit} showEditTaskComponent={showEditTaskComponent} />
             </div>
         </div>
     )
